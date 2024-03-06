@@ -1,0 +1,581 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Example</title>
+    
+</head>
+<body>
+    <div id="messages"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const messagesDiv = document.getElementById('messages');
+        let staticMessageInterval;
+        let marqueMessageInterval;
+        let imageDisplayInterval;
+
+
+        // Display static message
+        function displayStaticMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const staticMessagePara = document.createElement('p');
+            staticMessagePara.textContent = message;
+            messagesDiv.appendChild(staticMessagePara);
+            console.log(staticMessagePara)
+        }
+
+        // Display marque message
+        function displayMarqueMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const marqueMessageMarquee = document.createElement('marquee');
+            marqueMessageMarquee.setAttribute('behavior', 'scroll');
+            marqueMessageMarquee.setAttribute('direction', 'left');
+            marqueMessageMarquee.textContent = message;
+            messagesDiv.appendChild(marqueMessageMarquee);
+            console.log(marqueMessageMarquee)
+        }
+
+
+        // Display media (image or video)
+        function displayMedia(mediaUrl) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const mediaElement = mediaUrl.endsWith('.mp4') ? document.createElement('video') : document.createElement('img');
+            mediaElement.src = mediaUrl;
+            mediaElement.autoplay = true;
+            mediaElement.controls = true;
+            mediaElement.style.maxWidth = "300px";
+            mediaElement.style.height = "200px";
+            messagesDiv.appendChild(mediaElement);
+        }
+
+        // Socket event handler for receiving messages
+        socket.on('message', (data) => {
+            const { staticMessage, marqueMessage,mediaUrls } = data;
+            clearInterval(staticMessageInterval);
+            clearInterval(marqueMessageInterval);
+            clearInterval(imageDisplayInterval);
+            displayStaticMessage(staticMessage); // Display static message
+
+
+            // After 10 seconds, display marque message
+            staticMessageInterval = setTimeout(() => {
+                displayMarqueMessage(marqueMessage);
+                // After 15 seconds, display images
+                marqueMessageInterval = setTimeout(() => {
+                    let currentIndex = 0;
+                    const displayNextImage = () => {
+                        if (currentIndex < mediaUrls.length) {
+                            const imageUrl = mediaUrls[currentIndex];
+                            displayMedia(imageUrl);
+                            
+                            currentIndex++;
+                            imageDisplayInterval = setTimeout(displayNextImage, 6000); // Display each image for 5 seconds
+                        } else {
+                            // Restart the loop
+                            socket.emit('requestMessage');
+                        }
+                    };
+                    displayNextImage();
+                }, 5000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- video show but not work in autoplay   working .. -->
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Example</title>
+    
+</head>
+<body>
+    <div id="messages"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const messagesDiv = document.getElementById('messages');
+        let staticMessageInterval;
+        let marqueMessageInterval;
+        let imageDisplayInterval;
+
+
+        // Display static message
+        function displayStaticMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const staticMessagePara = document.createElement('p');
+            staticMessagePara.textContent = message;
+            messagesDiv.appendChild(staticMessagePara);
+            console.log(staticMessagePara)
+        }
+
+        // Display marque message
+        function displayMarqueMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const marqueMessageMarquee = document.createElement('marquee');
+            marqueMessageMarquee.setAttribute('behavior', 'scroll');
+            marqueMessageMarquee.setAttribute('direction', 'left');
+            marqueMessageMarquee.textContent = message;
+            messagesDiv.appendChild(marqueMessageMarquee);
+            console.log(marqueMessageMarquee)
+        }
+
+         // Display image
+        function displayImage(imageUrl) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const imageElement = document.createElement('img');
+            imageElement.src = imageUrl;
+            imageElement.alt = "image";
+            imageElement.style.maxWidth = "300px";
+            imageElement.style.height = "200px";
+            messagesDiv.appendChild(imageElement);
+            console.log(imageElement)
+        }
+
+        // Display video
+        function displayVideo(videoUrl) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const videoElement = document.createElement('video');
+            videoElement.src = videoUrl;
+            videoElement.autoplay = true;
+            videoElement.controls = true;
+            videoElement.style.maxWidth = "300px";
+            videoElement.style.height = "200px";
+            messagesDiv.appendChild(videoElement);
+            console.log(videoElement)
+
+        }
+
+        // Socket event handler for receiving messages
+        socket.on('message', (data) => {
+            const { staticMessage, marqueMessage,mediaUrls } = data;
+            clearInterval(staticMessageInterval);
+            clearInterval(marqueMessageInterval);
+            clearInterval(imageDisplayInterval);
+            displayStaticMessage(staticMessage); // Display static message
+
+
+            // After 10 seconds, display marque message
+            staticMessageInterval = setTimeout(() => {
+                displayMarqueMessage(marqueMessage);
+                // After 15 seconds, display images
+                marqueMessageInterval = setTimeout(() => {
+                    let currentIndex = 0;
+                    const displayNextImage = () => {
+                        if (currentIndex < mediaUrls.length) {
+                            const imageUrl = mediaUrls[currentIndex];
+                            displayVideo(imageUrl);
+                            
+                            currentIndex++;
+                            imageDisplayInterval = setTimeout(displayNextImage, 6000); // Display each image for 5 seconds
+                        } else {
+                            // Restart the loop
+                            socket.emit('requestMessage');
+                        }
+                    };
+                    displayNextImage();
+                }, 5000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>  -->
+
+
+
+
+
+
+
+
+
+<!-- // //  video show perfectly now i need to chunk video because they take  many time to load  -->
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Example</title>
+    
+</head>
+<body>
+    <div id="messages"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const messagesDiv = document.getElementById('messages');
+        let staticMessageInterval;
+        let marqueMessageInterval;
+        let imageDisplayInterval;
+
+        // Display static message
+        function displayStaticMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const staticMessagePara = document.createElement('p');
+            staticMessagePara.textContent = message;
+            messagesDiv.appendChild(staticMessagePara);
+        }
+
+        // Display marque message
+        function displayMarqueMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const marqueMessageMarquee = document.createElement('marquee');
+            marqueMessageMarquee.setAttribute('behavior', 'scroll');
+            marqueMessageMarquee.setAttribute('direction', 'left');
+            marqueMessageMarquee.textContent = message;
+            messagesDiv.appendChild(marqueMessageMarquee);
+        }
+
+         // Display image
+        function displayImage(imageUrl) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const imageElement = document.createElement('img');
+            imageElement.src = imageUrl;
+            imageElement.alt = "image";
+            imageElement.style.maxWidth = "300px";
+            imageElement.style.height = "200px";
+            messagesDiv.appendChild(imageElement);
+        }
+
+        // Display video
+        function displayVideo(videoUrl) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const videoElement = document.createElement('video');
+            videoElement.src = videoUrl;
+            videoElement.autoplay = true;
+            videoElement.controls = false;
+            videoElement.style.maxWidth = "300px";
+            videoElement.style.height = "200px";
+            messagesDiv.appendChild(videoElement);
+            
+        }
+
+        // Socket event handler for receiving messages
+        socket.on('message', (data) => {
+            const { staticMessage, marqueMessage,mediaUrls } = data;
+            clearInterval(staticMessageInterval);
+            clearInterval(marqueMessageInterval);
+            clearInterval(imageDisplayInterval);
+            displayStaticMessage(staticMessage); // Display static message
+
+            // After 10 seconds, display marque message
+            staticMessageInterval = setTimeout(() => {
+                displayMarqueMessage(marqueMessage);
+                // After 15 seconds, display images
+                marqueMessageInterval = setTimeout(() => {
+                    let currentIndex = 0;
+                    const displayNextImage = () => {
+                        if (currentIndex < mediaUrls.length) {
+                            const imageUrl = mediaUrls[currentIndex];
+                            displayVideo(imageUrl);
+                            currentIndex++;
+                            imageDisplayInterval = setTimeout(displayNextImage, 25000); // Display each image for 5 seconds
+                        } else {
+                            // Restart the loop
+                            socket.emit('requestMessage');
+                        }
+                    };
+                    displayNextImage();
+                }, 5000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Example</title>
+    
+</head>
+<body>
+    <div id="messages"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const messagesDiv = document.getElementById('messages');
+        let staticMessageInterval;
+        let marqueMessageInterval;
+        let imageDisplayInterval;
+
+        // Display static message
+        function displayStaticMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const staticMessagePara = document.createElement('p');
+            staticMessagePara.textContent = message;
+            messagesDiv.appendChild(staticMessagePara);
+        }
+
+        // Display marque message
+        function displayMarqueMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const marqueMessageMarquee = document.createElement('marquee');
+            marqueMessageMarquee.setAttribute('behavior', 'scroll');
+            marqueMessageMarquee.setAttribute('direction', 'left');
+            marqueMessageMarquee.textContent = message;
+            messagesDiv.appendChild(marqueMessageMarquee);
+        }
+
+         // Display image
+        function displayImage(imageUrl) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const imageElement = document.createElement('img');
+            imageElement.src = imageUrl;
+            messagesDiv.appendChild(imageElement);
+        }
+
+        // Socket event handler for receiving messages
+        socket.on('message', (data) => {
+            const { staticMessage, marqueMessage,imageUrls } = data;
+            clearInterval(staticMessageInterval);
+            clearInterval(marqueMessageInterval);
+            clearInterval(imageDisplayInterval);
+            displayStaticMessage(staticMessage); // Display static message
+
+            // After 10 seconds, display marque message
+            staticMessageInterval = setTimeout(() => {
+                displayMarqueMessage(marqueMessage);
+                // After 15 seconds, display images
+                marqueMessageInterval = setTimeout(() => {
+                    let currentIndex = 0;
+                    const displayNextImage = () => {
+                        if (currentIndex < imageUrls.length) {
+                            const imageUrl = imageUrls[currentIndex];
+                            displayImage(imageUrl);
+                            currentIndex++;
+                            imageDisplayInterval = setTimeout(displayNextImage, 5000); // Display each image for 5 seconds
+                        } else {
+                            // Restart the loop
+                            socket.emit('requestMessage');
+                        }
+                    };
+                    displayNextImage();
+                }, 15000);
+            }, 10000);
+        });
+    </script>
+</body>
+</html>  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ///// work perfectly   for image and text   now check  only for video  -->
+
+<!--  -->
+<!--  -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Example</title>
+    
+</head>
+<body>
+    <div id="messages"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const messagesDiv = document.getElementById('messages');
+        let staticMessageInterval;
+        let marqueMessageInterval;
+        let imageDisplayInterval;
+
+        // Display static message
+        function displayStaticMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const staticMessagePara = document.createElement('p');
+            staticMessagePara.textContent = message;
+            messagesDiv.appendChild(staticMessagePara);
+        }
+
+        // Display marque message
+        function displayMarqueMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const marqueMessageMarquee = document.createElement('marquee');
+            marqueMessageMarquee.setAttribute('behavior', 'scroll');
+            marqueMessageMarquee.setAttribute('direction', 'left');
+            marqueMessageMarquee.textContent = message;
+            messagesDiv.appendChild(marqueMessageMarquee);
+        }
+
+         // Display image
+        function displayImage(imageUrl) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const imageElement = document.createElement('img');
+            imageElement.src = imageUrl;
+            messagesDiv.appendChild(imageElement);
+        }
+
+        // Socket event handler for receiving messages
+        socket.on('message', (data) => {
+            const { staticMessage, marqueMessage,imageUrls } = data;
+            clearInterval(staticMessageInterval);
+            clearInterval(marqueMessageInterval);
+            clearInterval(imageDisplayInterval);
+            displayStaticMessage(staticMessage); // Display static message
+
+            // After 10 seconds, display marque message
+            staticMessageInterval = setTimeout(() => {
+                displayMarqueMessage(marqueMessage);
+                // After 15 seconds, display images
+                marqueMessageInterval = setTimeout(() => {
+                    let currentIndex = 0;
+                    const displayNextImage = () => {
+                        if (currentIndex < imageUrls.length) {
+                            const imageUrl = imageUrls[currentIndex];
+                            displayImage(imageUrl);
+                            currentIndex++;
+                            imageDisplayInterval = setTimeout(displayNextImage, 5000); // Display each image for 5 seconds
+                        } else {
+                            // Restart the loop
+                            socket.emit('requestMessage');
+                        }
+                    };
+                    displayNextImage();
+                }, 15000);
+            }, 10000);
+        });
+    </script>
+</body>
+</html>  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- // perfectly working  but the issue is  they work only for text not for images //-->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Example</title>
+
+</head>
+<body>
+    <div id="messages"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const messagesDiv = document.getElementById('messages');
+        let staticMessageInterval;
+        let marqueMessageInterval;
+
+        // Display static message
+        function displayStaticMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const staticMessagePara = document.createElement('p');
+            staticMessagePara.setAttribute('weight', '800');
+            staticMessagePara.textContent = message;
+            messagesDiv.appendChild(staticMessagePara);
+        }
+
+        // Display marque message
+        function displayMarqueMessage(message) {
+            messagesDiv.innerHTML = ''; // Clear existing messages
+            const marqueMessageMarquee = document.createElement('marquee');
+            marqueMessageMarquee.setAttribute('behavior', 'scroll');
+            marqueMessageMarquee.setAttribute('direction', 'left');
+            marqueMessageMarquee.setAttribute('weight', '800');
+            marqueMessageMarquee.textContent = message;
+            messagesDiv.appendChild(marqueMessageMarquee);
+        }
+
+        // Socket event handler for receiving messages
+        socket.on('message', (data) => {
+            const { staticMessage, marqueMessage } = data;
+            clearInterval(staticMessageInterval);
+            clearInterval(marqueMessageInterval);
+            displayStaticMessage(staticMessage); // Display static message
+
+            // After 10 seconds, display marque message
+            staticMessageInterval = setTimeout(() => {
+                displayMarqueMessage(marqueMessage);
+                // After 15 seconds, clear marque message and start loop again
+                marqueMessageInterval = setTimeout(() => {
+                    messagesDiv.innerHTML = ''; // Clear marque message
+                    // Emit a new message to start the loop again
+                    socket.emit('requestMessage');
+                }, 15000);
+            }, 10000);
+        });
+    </script>
+</body>
+</html>  -->
+
