@@ -1,91 +1,110 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Socket.IO Example</title>
-    
+    <style>
+        #messages p,
+        #messages marquee {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div id="messages"></div>
+    <div id="messages">
+        <p id="static-message"></p>
+        <marquee id="marquee-message"></marquee>
+        <img id="image-element" style="max-width: 300px; height: 200px;">
+        <video id="video-element" autoplay muted style="max-width: 300px; height: 200px;"></video>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
     <script>
         const socket = io();
-        const messagesDiv = document.getElementById('messages');
+        const staticMessagePara = document.getElementById('static-message');
+        const marqueMessageMarquee = document.getElementById('marquee-message');
+        const imageElement = document.getElementById('image-element');
+        const videoElement = document.getElementById('video-element');
         let staticMessageInterval;
         let marqueMessageInterval;
-        let imageDisplayInterval;
-
+        let mediaDisplayInterval;
 
         // Display static message
         function displayStaticMessage(message) {
-            messagesDiv.innerHTML = ''; // Clear existing messages
-            const staticMessagePara = document.createElement('p');
             staticMessagePara.textContent = message;
-            messagesDiv.appendChild(staticMessagePara);
-            console.log(staticMessagePara)
+            staticMessagePara.style.display = 'block';
+            marqueMessageMarquee.style.display = 'none';
+            videoElement.style.display = 'none';
+            imageElement.style.display = 'none';
+
         }
 
         // Display marque message
         function displayMarqueMessage(message) {
-            messagesDiv.innerHTML = ''; // Clear existing messages
-            const marqueMessageMarquee = document.createElement('marquee');
-            marqueMessageMarquee.setAttribute('behavior', 'scroll');
-            marqueMessageMarquee.setAttribute('direction', 'left');
             marqueMessageMarquee.textContent = message;
-            messagesDiv.appendChild(marqueMessageMarquee);
-            console.log(marqueMessageMarquee)
+            marqueMessageMarquee.style.display = 'block';
+            staticMessagePara.style.display = 'none'
+            videoElement.style.display = 'none';
+            imageElement.style.display = 'none';
         }
-
 
         // Display media (image or video)
         function displayMedia(mediaUrl) {
-            messagesDiv.innerHTML = ''; // Clear existing messages
-            const mediaElement = mediaUrl.endsWith('.mp4') ? document.createElement('video') : document.createElement('img');
-            mediaElement.src = mediaUrl;
-            mediaElement.autoplay = true;
-            mediaElement.controls = true;
-            mediaElement.style.maxWidth = "300px";
-            mediaElement.style.height = "200px";
-            messagesDiv.appendChild(mediaElement);
+            if (mediaUrl.endsWith('.mp4')) {
+                videoElement.src = mediaUrl;
+                videoElement.style.display = 'block';
+                 videoElement.addEventListener('ended', function() {
+                    socket.emit('requestMessage'); // Emit requestMessage event when video ends
+                });
+                imageElement.style.display = 'none'; // Hide image element
+                staticMessagePara.style.display = 'none'
+                marqueMessageMarquee.style.display = 'none'
+                
+            } else {
+                imageElement.src = mediaUrl;
+                imageElement.style.display = 'block';
+                videoElement.style.display = 'none'; // Hide video element
+                staticMessagePara.style.display = 'none'
+                marqueMessageMarquee.style.display = 'none'
+            }
         }
 
         // Socket event handler for receiving messages
         socket.on('message', (data) => {
-            const { staticMessage, marqueMessage,mediaUrls } = data;
+            const { staticMessage, marqueMessage, mediaUrls } = data;
             clearInterval(staticMessageInterval);
             clearInterval(marqueMessageInterval);
-            clearInterval(imageDisplayInterval);
-            displayStaticMessage(staticMessage); // Display static message
+            clearInterval(mediaDisplayInterval);
 
+            displayStaticMessage(staticMessage); // Display static message
 
             // After 10 seconds, display marque message
             staticMessageInterval = setTimeout(() => {
                 displayMarqueMessage(marqueMessage);
-                // After 15 seconds, display images
+
+                // After 15 seconds, display images or videos
                 marqueMessageInterval = setTimeout(() => {
                     let currentIndex = 0;
-                    const displayNextImage = () => {
+                    const displayNextMedia = () => {
                         if (currentIndex < mediaUrls.length) {
-                            const imageUrl = mediaUrls[currentIndex];
-                            displayMedia(imageUrl);
-                            
+                            const mediaUrl = mediaUrls[currentIndex];
+                            displayMedia(mediaUrl);
                             currentIndex++;
-                            imageDisplayInterval = setTimeout(displayNextImage, 6000); // Display each image for 5 seconds
+                            mediaDisplayInterval = setTimeout(displayNextMedia, 6000); // Display each media for 5 seconds
                         } else {
                             // Restart the loop
                             socket.emit('requestMessage');
                         }
                     };
-                    displayNextImage();
-                }, 5000);
-            }, 1000);
+                    displayNextMedia();
+                }, 15000);
+            }, 10000);
         });
     </script>
 </body>
-</html> 
+</html>
+
 
 
 

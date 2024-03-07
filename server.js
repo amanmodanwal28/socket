@@ -38,10 +38,14 @@ io.on('connection', (socket) => {
     }
     // Emit message when a client connects
     emitMessage();
+
+    // Handle request to preload media files
+    socket.on('preloadMedia', emitMessage);
+
     // Handle request for a new message
-socket.on('requestMessage', () => {
-    emitMessage(); // Emit a new message to start the loop again
-});
+    socket.on('requestMessage', () => {
+        emitMessage(); // Emit a new message to start the loop again
+    });
     // Handle disconnection
     socket.on('disconnect', () => {
         console.log('A user disconnected');
