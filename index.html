@@ -16,7 +16,7 @@
         <p id="static-message"></p>
         <marquee id="marquee-message"></marquee>
         <img id="image-element" style="max-width: 300px; height: 200px;">
-        <video id="video-element" autoplay muted style="max-width: 300px; height: 200px;"></video>
+        <video id="video-element" autoplay muted style="width: 100%; height: 100%"></video>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
@@ -99,8 +99,10 @@
                     };
                     displayNextMedia();
                 }, 15000);
-            }, 10000);
+            }, 1000);
         });
+   
+   
     </script>
 </body>
 </html>
@@ -126,8 +128,8 @@
 
 <!-- video show but not work in autoplay   working .. -->
 
-<!-- 
-<!DOCTYPE html>
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -224,6 +226,8 @@
                 }, 5000);
             }, 1000);
         });
+    
+    
     </script>
 </body>
 </html>  -->

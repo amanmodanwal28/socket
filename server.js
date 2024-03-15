@@ -10,7 +10,7 @@ const io = socketIo(server);
 const port = 5000;
 const mediaFolder = path.join(__dirname, 'uploads');
 
-
+ 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
@@ -32,6 +32,7 @@ io.on('connection', (socket) => {
             return;
         }
         const mediaUrls = files.map(file => `/uploads/${file}`);
+        // console.log(mediaUrls)
         const message = { staticMessage, marqueMessage, mediaUrls };
         io.emit('message', message);
     });
