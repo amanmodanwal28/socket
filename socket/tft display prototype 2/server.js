@@ -6,37 +6,34 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-
 const port = 5000;
-const mediaFolder = path.join(__dirname, 'uploads');
 
-// Serve static files from the 'uploads' directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
     console.log('A user connected');
     // Function to preload media files and cache their URLs
-    function preloadMedia() {
-        fs.readdir(mediaFolder, (err, files) => {
-            if (err) {
-                console.error('Error reading media directory:', err);
-                return;
-            }
-            const mediaUrls = files.map(file => `/uploads/${file}`);
-            console.log('Preloaded media URLs:', mediaUrls);
-            io.emit('mediaPreloaded', mediaUrls); // Emit to all connected clients
-        });
+    function emitMessage() {
+        const marqueMessage = "PPS INTERNATIONAL AND PT COMMUNICATION"; // Static text        
+         const staticMessage = "Unit 3"; // Static message
+        const message = { staticMessage, marqueMessage};
+        io.emit('message', message);
     }
+    // Emit message when a client connects
+    emitMessage();
 
-    // Handle request to preload media files
-  socket.on('preloadMedia', preloadMedia);
-  
-    socket.on('disconnect', () => {
+    
+    // Listen for message requests
+    socket.on('request_message', () => {
+        emitMessage();
+    });
+    
+    // Handle disconnection
+    socket.on('disconnect', () => {    
         console.log('A user disconnected');
     });
 });
@@ -54,76 +51,6 @@ server.listen(port, () => {
 
 
 
-//   in this code thewy join to group
-
-
-// const express = require('express');
-// const http = require('http');
-// const socketIo = require('socket.io');
-// const fs = require('fs');
-// const path = require('path');
-
-// const app = express();
-// const server = http.createServer(app);
-// const io = socketIo(server);
-
-// const port = 5000;
-// const mediaFolder = path.join(__dirname, 'uploads');
-
-// // Serve static files from the 'uploads' directory
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// app.get('/', (req, res) => {
-//   res.sendFile(__dirname + '/index.html');
-// });
-
-// // Socket.io connection handling
-// io.on('connection', (socket) => {
-//     console.log('A user connected');
-
-//     // Function to preload media files and cache their URLs
-//     function preloadMedia() {
-//         fs.readdir(mediaFolder, (err, files) => {
-//             if (err) {
-//                 console.error('Error reading media directory:', err);
-//                 return;
-//             }
-//             const mediaUrls = files.map(file => `/uploads/${file}`);
-//             console.log('Preloaded media URLs:', mediaUrls);
-//             io.to('mediaGroup').emit('mediaPreloaded', mediaUrls); // Emit to the 'mediaGroup' room
-//         });
-//     }
-
-//     // Handle request to preload media files
-//     socket.on('preloadMedia', preloadMedia);
-  
-//     socket.on('disconnect', () => {
-//         console.log('A user disconnected');
-//     });
-
-//     // Join the 'mediaGroup' room when a user connects
-//     socket.join('mediaGroup');
-// });
-
-// // Start the server
-// server.listen(port, () => {
-//     console.log(`Server is running on port ${port}`);
-//     console.log(`http://localhost:${port}`);
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -142,37 +69,27 @@ server.listen(port, () => {
 // const app = express();
 // const server = http.createServer(app);
 // const io = socketIo(server);
-
 // const port = 5000;
-// const mediaFolder = path.join(__dirname, 'uploads');
 
-// // Serve static files from the 'uploads' directory
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// app.get('/', (req, res) => {
-//   res.sendFile(__dirname + '/index.html');
-// });
+// // Serve static files from the 'public' directory
+// app.use(express.static(path.join(__dirname, 'public')));
+
 
 // // Socket.io connection handling
 // io.on('connection', (socket) => {
 //     console.log('A user connected');
 //     // Function to preload media files and cache their URLs
-//     function preloadMedia() {
-//         fs.readdir(mediaFolder, (err, files) => {
-//             if (err) {
-//                 console.error('Error reading media directory:', err);
-//                 return;
-//             }
-//             const mediaUrls = files.map(file => `/uploads/${file}`);
-//             console.log('Preloaded media URLs:', mediaUrls);
-//             io.emit('mediaPreloaded', mediaUrls); // Emit to all connected clients
-//         });
+//     function emitMessage() {
+//         const marqueMessage = "PPS INTERNATIONAL AND PT COMMUNICATION"; // Static text        
+//         io.emit('message', marqueMessage);
 //     }
+//     // Emit message when a client connects
+//     emitMessage();
 
-//     // Handle request to preload media files
-//   socket.on('preloadMedia', preloadMedia);
-  
-//     socket.on('disconnect', () => {
+    
+//     // Handle disconnection
+//     socket.on('disconnect', () => {    
 //         console.log('A user disconnected');
 //     });
 // });

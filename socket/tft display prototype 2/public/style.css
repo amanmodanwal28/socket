@@ -1,0 +1,23 @@
+body {
+    background-color: rgb(39, 218, 188);
+    margin: 2%;
+    padding: 2%;
+}
+
+#messages {
+    font-size: 38px;
+}
+
+h1 {
+    font-style: italic;
+    align-items: center;
+
+}
+
+/* style.css */
+.styled-h1 {
+    color: blue;
+    font-weight: bold;
+    text-decoration: underline double  red ;
+    text-align: center;
+}
