@@ -16,7 +16,8 @@ h1 {
 
 /* style.css */
 .styled-h1 {
-    color: blue;
+    font-size: 38px;
+    color: rgb(238, 54, 54);
     font-weight: bold;
     text-decoration: underline double  red ;
     text-align: center;

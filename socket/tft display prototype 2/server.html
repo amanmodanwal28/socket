@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>UDP Message Receiver</title>
+<style>
+#messages {
+    font-size: 38px;
+    color: rgb(238, 54, 54);
+    font-weight: bold;
+    text-decoration: underline red ;
+}
+</style>
+</head>
+<body>
+    <h1>Received UDP Messages:</h1>
+    <ul id="messages"></ul>
+    
+    <script>
+        const socket = new WebSocket('ws://localhost:8080');
+
+        socket.onmessage = function(event) {
+            const messagesList = document.getElementById('messages');
+            const li = document.createElement('li');
+            li.textContent = event.data;
+            messagesList.appendChild(li);
+        };
+
+        console.log('WebSocket connected');
+    </script>
+</body>
+</html>

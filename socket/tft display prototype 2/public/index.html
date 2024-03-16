@@ -1,6 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIS Video Player</title>
+</head>
+<body>
+    <video id="videoPlayer" controls autoplay muted>
+        <source src="./uploads/2.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Listen for real-time updates
+        socket.on('statusUpdate', (data) => {
+            console.log('Received real-time update:', data);
+            // You can update UI or perform any other actions here
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,38 +76,27 @@
                 messagesDiv.appendChild(marqueMessageMarquee);
                 console.log(marqueMessageMarquee);
 
-                // After 10 seconds, display static message
-                setTimeout(() => {
-                    displayStaticMessage(staticMessage);
-                }, 10000); // 10 seconds in milliseconds
+               
             }
 
             // Display static message for 15 seconds
             function displayStaticMessage(message) {
-                messagesDiv.innerHTML = ''; // Clear existing messages
                 const staticMessageHeader = document.createElement('h1');
                 staticMessageHeader.textContent = message;
                 staticMessageHeader.classList.add('styled-h1'); // Add a class for styling
                 messagesDiv.appendChild(staticMessageHeader);
                 console.log(staticMessageHeader);
 
-                // After 15 seconds, display marque message again
-                setTimeout(() => {
-                    displayMarqueMessage(marqueMessage);
-                }, 15000); // 15 seconds in milliseconds
+               
             }
 
-            if (messageCycle === 0) {
-                displayMarqueMessage(marqueMessage);
-                messageCycle = 1;
-            } else {
-                displayStaticMessage(staticMessage);
-                messageCycle = 0;
-            }
+           
+            displayMarqueMessage(marqueMessage);
+            displayStaticMessage(staticMessage)
         });
     </script>
 </body>
-</html>
+</html> -->
 
 
 
