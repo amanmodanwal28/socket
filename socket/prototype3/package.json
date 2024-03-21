@@ -1,0 +1,18 @@
+{
+  "name": "prototype3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.1.0",
+    "socket.io": "^4.7.5",
+    "udp": "^1.0.0",
+    "ws": "^8.16.0"
+  }
+}
