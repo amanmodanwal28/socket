@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Streaming</title>
+</head>
+<body>
+  <video id="videoPlayer" autoplay controls muted></video>
+
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    const videoPlayer = document.getElementById('videoPlayer');
+
+    // Listen for the 'playVideo' event from the server
+    socket.on('playVideo', (videoUrl) => {
+      videoPlayer.src = videoUrl;
+      console.log(videoUrl)
+    });
+
+    // Listen for the 'ended' event on the video element
+    videoPlayer.addEventListener('ended', () => {
+      socket.emit('videoEnded');
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Streaming</title>
+  <link href="https://vjs.zencdn.net/7.14.3/video-js.css" rel="stylesheet">
+  <script src="https://vjs.zencdn.net/7.14.3/video.js"></script>
+</head>
+<body>
+  <video id="my-video" class="video-js" controls autoplay preload="auto" width="640" height="360" data-setup="{}">
+    <source src="./uploads/2.mp4">
+    Your browser does not support the video tag.
+  </video>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time Video Streaming</title>
+</head>
+<body>
+  <video id="localVideo" autoplay></video>
+  <video id="remoteVideo" autoplay></video>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+    let peerConnection = null;
+    
+    // Get user media (video and audio)
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        localVideo.srcObject = stream;
+        localStream = stream;
+        socket.emit('signal', { target: 'server', signal: 'newUser' });
+      })
+      .catch((error) => {
+        console.error('Error accessing media devices:', error);
+      });
+      
+    // Handle signaling messages
+    socket.on('signal', async (data) => {
+      if (data.signal === 'newUser') {
+        // Create peer connection
+        peerConnection = new RTCPeerConnection();
+        localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
+        
+        // Create offer
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        socket.emit('signal', { target: data.sender, signal: offer });
+        
+        // Set remote description when receiving answer
+        peerConnection.ontrack = (event) => {
+          remoteVideo.srcObject = event.streams[0];
+        };
+      } else {
+        // Set remote description when receiving offer
+        await peerConnection.setRemoteDescription(data.signal);
+        
+        // Create answer
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+        socket.emit('signal', { target: data.sender, signal: answer });
+      }
+    });
+  </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time Video Streaming</title>
+</head>
+<body>
+  <video id="localVideo" autoplay ></video>
+  <video id="remoteVideo" autoplay ></video>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+    let peerConnection = null;
+    
+    // Get user media (video and audio)
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        localVideo.srcObject = stream;
+        // Send offer with local stream to server
+        const pc = new RTCPeerConnection();
+        stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+        pc.createOffer()
+          .then((offer) => pc.setLocalDescription(offer))
+          .then(() => {
+            socket.emit('offer', pc.localDescription);
+          });
+
+        // Receive answer from remote client
+        socket.on('answer', (answer) => {
+          pc.setRemoteDescription(answer);
+        });
+
+        // Receive ICE candidate from remote client
+        socket.on('icecandidate', (candidate) => {
+          pc.addIceCandidate(candidate);
+        });
+      })
+      .catch((error) => {
+        console.error('Error accessing media devices:', error);
+      });
+  </script>
+</body>
+</html> -->

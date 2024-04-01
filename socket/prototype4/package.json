@@ -1,0 +1,22 @@
+{
+  "name": "prototype4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-media-server": "^2.6.3",
+    "nodemon": "^3.1.0",
+    "peer": "^1.0.2",
+    "range-parser": "^1.2.1",
+    "socket.io": "^4.7.5",
+    "udp": "^1.0.0",
+    "webrtc": "^1.14.1",
+    "ws": "^8.16.0"
+  }
+}
