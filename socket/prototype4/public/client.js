@@ -1,3 +1,26 @@
+// Create a UDP socket
+const socket = dgram.createSocket({ type: 'udp4' });
+
+// Define the multicast group and port
+const multicastAddress = '239.192.0.1'; // Example multicast address
+const multicastPort = 12345;
+
+// Join the multicast group
+socket.on('listening', () => {
+  socket.addMembership(multicastAddress);
+  console.log(`Joined multicast group ${multicastAddress}`);
+});
+
+// Handle incoming messages
+socket.on('message', (msg, rinfo) => {
+  console.log(`message from other device: ${msg} from ${rinfo.address}:${rinfo.port}`);
+});
+// Bind the socket to the multicast port
+socket.bind(multicastPort, () => {
+  console.log(`UDP socket is listening on port ${multicastPort} for multicast messages`);
+});
+
+
 
 
 
