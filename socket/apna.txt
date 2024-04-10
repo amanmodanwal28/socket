@@ -1,0 +1,12 @@
+const str = "amanaaaad";
+const unique_value = [...new Set(str)];
+
+console.log(unique_value);
+
+const  unique = [];
+
+for(let i = 0;i<=str.length-1;i++){
+if(unique.indexOf(str[i]) == -1){
+unique.push(str[i])
+}
+}

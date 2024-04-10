@@ -1,0 +1,32 @@
+**Project Title**: File Converter and Audio Sorting Application
+
+**Description**:
+Developed a web-based application using HTML, CSS, and Node.js to facilitate file conversion and audio sorting processes. The application utilizes a user interface accessible through port 3000 in a web browser. Key functionalities include:
+
+1. **File Conversion**: Users can upload Excel files via the application's interface. The system converts these Excel files into XML format. 
+
+2. **Data Parsing and Transformation**: Implemented logic to extract data from specific columns within the Excel file. The application identifies columns labeled "English," "Hindi," and "Regional" and converts their textual content into hexadecimal and Unicode representations. 
+
+3. **Geographical Coordinate Calculation**: Extracted data from designated columns containing latitude, longitude, and altitude information. Employed this data to calculate corresponding x, y, z coordinates using geographical algorithms.
+
+4. **Audio File Sorting**: Utilized the "Code Name" column data to identify audio file names. Implemented sorting algorithms to organize these audio files based on the extracted data. 
+
+5. **Folder Organization**: Generated a new folder to store the sorted audio files systematically.
+
+**Technologies Used**:
+- HTML
+- CSS
+- Node.js
+
+**Key Responsibilities**:
+- Designed and developed the user interface using HTML and CSS.
+- Implemented file conversion functionality using Node.js.
+- Programmed logic for data parsing, transformation, and coordinate calculation.
+- Developed algorithms for audio file sorting and folder organization.
+
+**Achievements**:
+- Successfully delivered a functional application meeting project requirements.
+- Optimized the application for efficient file processing and sorting operations.
+- Ensured compatibility and responsiveness across various web browsers.
+
+This project showcases proficiency in web development technologies, data parsing, and algorithmic problem-solving. It demonstrates the ability to design and implement practical solutions to real-world challenges.
